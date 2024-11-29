@@ -3,17 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Issue Navigator</title>
+    <title>BugBuster - GitHub Issue Finder</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>GitHub Issue Navigator</h1>
-        <button id="login-button">Log In</button>
+        <div class="navbar">
+            <div class="logo">
+                <h1>BugBuster</h1>
+            </div>
+            <div class="menu" id="menu-toggle">
+                <button class="hamburger" id="hamburger-btn">&#9776;</button>
+                <ul id="nav-links" class="hidden">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li id="user-menu">
+                        <!-- Dynamic Username or Sign-In/Sign-Up Links -->
+                    </li>
+                </ul>
+            </div>
+        </div>
     </header>
+
     <main>
-        <section id="issues-container"></section>
+        <div class="search-container">
+            <input type="text" id="repo-input" placeholder="Enter GitHub repository (e.g., facebook/react)">
+            <button id="search-button">Search Issues</button>
+        </div>
+
+        <div id="loading-spinner" class="hidden">
+            <p>Loading issues...</p>
+        </div>
+
+        <section id="issues-container" class="hidden">
+            <!-- Issues will be dynamically inserted here -->
+        </section>
+
+        <div id="error-message" class="hidden">
+            <p>Oops! Something went wrong. Please try again.</p>
+        </div>
     </main>
+
+    <footer>
+        <p>&copy; 2024 BugBuster | Built with love for open-source enthusiasts!</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
