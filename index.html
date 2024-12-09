@@ -4,50 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BugBuster - GitHub Issue Finder</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <div class="navbar">
-            <div class="logo">
-                <h1>BugBuster</h1>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-200 font-sans">
+
+<!-- Header -->
+<!-- Header -->
+<header class="bg-gray-900 shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+        <h1 class="text-2xl font-bold text-teal-400">BugBuster</h1>
+        <nav class="relative">
+            <!-- Hamburger button -->
+            <button id="hamburger-btn" class="lg:hidden text-xl focus:outline-none text-teal-400">
+                &#9776;
+            </button>
+            <ul class="hidden lg:flex space-x-6">
+                <li><a href="#" class="hover:text-teal-300 transition duration-300">Home</a></li>
+                <li><a href="#" class="hover:text-teal-300 transition duration-300">About</a></li>
+                <li><a href="#" class="hover:text-teal-300 transition duration-300">Features</a></li>
+                <li><a href="#" class="hover:text-teal-300 transition duration-300">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Mobile Navigation -->
+<div id="mobile-menu" class="fixed inset-0 bg-gray-800 bg-opacity-90 transform -translate-x-full transition-transform duration-300">
+    <div class="flex justify-between items-center py-4 px-6">
+        <h1 class="text-2xl font-bold text-teal-400">BugBuster</h1>
+    </div>
+    <ul class="flex flex-col space-y-4 text-center mt-8">
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">Home</a></li>
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">About</a></li>
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">Features</a></li>
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">Contact</a></li>
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">Login</a></li>
+        <li><a href="#" class="text-lg hover:text-teal-300 transition duration-300">Sign Up</a></li>
+    </ul>
+</div>
+<script>
+
+    // Grab DOM elements
+const hamburgerBtn = document.getElementById('hamburger-btn'); // Hamburger button
+const mobileMenu = document.getElementById('mobile-menu'); // Mobile menu container
+
+// Toggle the mobile menu visibility when the hamburger button is clicked
+hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('-translate-x-full'); // Toggle the off-screen class
+});
+
+// Close the mobile menu if clicked outside
+document.addEventListener('click', (e) => {
+    // Check if the clicked element is outside the mobile menu and hamburger button
+    if (!mobileMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+        mobileMenu.classList.add('-translate-x-full'); // Hide the menu
+    }
+});
+
+</script>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-12 px-6">
+        <!-- Search Container -->
+        <div class="bg-gray-800 shadow-lg rounded-lg p-6 space-y-4">
+            <h2 class="text-3xl font-semibold text-teal-400 text-center">Find GitHub Issues</h2>
+            <div class="flex flex-col md:flex-row md:space-x-4 items-center">
+                <input type="text" id="repo-input" placeholder="Enter GitHub repository (e.g., facebook/react)" 
+                    class="w-full border border-gray-600 bg-gray-700 text-gray-200 rounded-md px-4 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none">
+                <button id="search-button" 
+                    class="mt-4 md:mt-0 bg-teal-500 text-white px-6 py-2 rounded-md hover:bg-teal-600 transition duration-300">
+                    Search Issues
+                </button>
             </div>
-            <div class="menu" id="menu-toggle">
-                <button class="hamburger" id="hamburger-btn">&#9776;</button>
-                <ul id="nav-links" class="hidden">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li id="user-menu">
-                        <!-- Dynamic Username or Sign-In/Sign-Up Links -->
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <div class="search-container">
-            <input type="text" id="repo-input" placeholder="Enter GitHub repository (e.g., facebook/react)">
-            <button id="search-button">Search Issues</button>
         </div>
 
-        <div id="loading-spinner" class="hidden">
-            <p>Loading issues...</p>
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="hidden mt-8 text-center">
+            <div class="loader mx-auto border-4 border-gray-300 border-t-teal-500 rounded-full w-12 h-12 animate-spin"></div>
+            <p class="text-gray-400 mt-4">Loading issues...</p>
         </div>
 
-        <section id="issues-container" class="hidden">
+        <!-- Issues Container -->
+        <section id="issues-container" class="hidden mt-12 bg-gray-800 shadow-lg rounded-lg p-6">
             <!-- Issues will be dynamically inserted here -->
         </section>
 
-        <div id="error-message" class="hidden">
-            <p>Oops! Something went wrong. Please try again.</p>
+        <!-- Error Message -->
+        <div id="error-message" class="hidden mt-8 text-center">
+            <p class="text-red-500 font-semibold">Oops! Something went wrong. Please try again.</p>
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2024 BugBuster | Built with love for open-source enthusiasts!</p>
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6 fixed bottom-0 left-0 right-0 text-center text-gray-400">
+        <p>&copy; 2024 <span class="text-teal-400">BugBuster</span> | Built with ❤️ for open-source enthusiasts!</p>
     </footer>
+    <!-- JavaScript for Menu -->
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
+
 </body>
 </html>

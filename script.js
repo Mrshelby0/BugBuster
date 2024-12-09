@@ -1,88 +1,133 @@
-// GitHub Issues Fetching & Displaying Logic
+// DOM Elements
 const searchButton = document.getElementById('search-button');
 const repoInput = document.getElementById('repo-input');
 const issuesContainer = document.getElementById('issues-container');
 const loadingSpinner = document.getElementById('loading-spinner');
 const errorMessage = document.getElementById('error-message');
-const hamburgerBtn = document.getElementById('hamburger-btn');
 const navLinks = document.getElementById('nav-links');
 const userMenu = document.getElementById('user-menu');
 
-// Simulate whether the user is logged in
+// User Authentication Simulation
 let loggedIn = false; // Change to true to simulate a logged-in user
-let username = "JohnDoe"; // Change to the logged-in username
+let username = "JohnDoe"; // Example username
 
-// Toggle the hamburger menu for small screens
-hamburgerBtn.addEventListener('click', () => {
-    document.querySelector('.navbar').classList.toggle('open');
-});
+// Event Listeners
+hamburgerBtn.addEventListener('click', toggleNavbar);
+searchButton.addEventListener('click', fetchGitHubIssues);
 
-// Update the user menu based on login status
-function updateUserMenu() {
-    if (loggedIn) {
-        userMenu.innerHTML = `<a href="#">Hello, ${username}</a>`;
-    } else {
-        userMenu.innerHTML = `<a href="#" onclick="signIn()">Sign In</a> | <a href="#" onclick="signUp()">Sign Up</a>`;
-    }
+// Initialize the User Menu
+updateUserMenu();
+
+/**
+ * Toggle the visibility of the navbar menu for mobile devices.
+ */
+function toggleNavbar() {
+    navLinks.classList.toggle('hidden');
+    navLinks.classList.toggle('flex');
 }
 
-// Simulate the sign-in process
+/**
+ * Update the user menu to display login options or a personalized greeting.
+ */
+function updateUserMenu() {
+    userMenu.innerHTML = loggedIn
+        ? `<a href="#">Hello, ${username}</a>`
+        : `<a href="#" onclick="signIn()">Sign In</a> | <a href="#" onclick="signUp()">Sign Up</a>`;
+}
+
+/**
+ * Simulate the sign-in process.
+ */
 function signIn() {
     alert("Sign-In functionality will be implemented later.");
 }
 
-// Simulate the sign-up process
+/**
+ * Simulate the sign-up process.
+ */
 function signUp() {
     alert("Sign-Up functionality will be implemented later.");
 }
 
-searchButton.addEventListener('click', fetchGitHubIssues);
-
+/**
+ * Fetch GitHub issues from a repository and display them.
+ */
 async function fetchGitHubIssues() {
     const repoName = repoInput.value.trim();
+
     if (!repoName) {
-        alert("Please enter a repository name!");
+        alert("Please enter a valid repository name!");
         return;
     }
 
-    showLoading(true);
+    toggleLoading(true);
     clearPreviousIssues();
 
     try {
         const response = await fetch(`https://api.github.com/repos/${repoName}/issues?labels=good%20first%20issue,help%20wanted`);
         
         if (!response.ok) {
-            throw new Error("Failed to fetch issues");
+            throw new Error(`Failed to fetch issues: ${response.statusText}`);
         }
-        
+
         const issues = await response.json();
-        
+
         if (issues.length === 0) {
-            errorMessage.textContent = "No issues found for this repository.";
-            errorMessage.style.display = "block";
+            showMessage("There are no issues in this repo.");
         } else {
             displayIssues(issues);
         }
     } catch (error) {
         console.error("Error fetching issues:", error);
-        errorMessage.textContent = "Oops! Something went wrong. Please try again.";
-        errorMessage.style.display = "block";
+        showMessage("An error occurred. Please check the repository name and try again.");
     } finally {
-        showLoading(false);
+        toggleLoading(false);
     }
 }
 
-function showLoading(isLoading) {
-    if (isLoading) {
-        loadingSpinner.style.display = "block";
-        issuesContainer.style.display = "none";
-    } else {
-        loadingSpinner.style.display = "none";
-        issuesContainer.style.display = "grid";
-    }
+/**
+ * Toggle the loading spinner and issues container visibility.
+ * @param {boolean} isLoading - Whether to show the loading spinner.
+ */
+function toggleLoading(isLoading) {
+    loadingSpinner.style.display = isLoading ? "block" : "none";
+    issuesContainer.style.display = isLoading ? "none" : "grid";
 }
 
+/**
+ * Clear previously displayed issues and error messages.
+ */
 function clearPreviousIssues() {
     issuesContainer.innerHTML = '';
-    errorMessage.style.display = 'none'; // Hide error message if it's displayed
+    errorMessage.style.display = 'none';
+}
+
+/**
+ * Display a message in the error message container.
+ * @param {string} message - The message to display.
+ */
+function showMessage(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = "block";
+}
+
+/**
+ * Display the fetched GitHub issues in the issues container.
+ * @param {Array} issues - The list of GitHub issues to display.
+ */
+function displayIssues(issues) {
+    issues.forEach(issue => {
+        const issueCard = document.createElement('div');
+        issueCard.className = "issue-card border p-4 rounded-lg shadow hover:shadow-lg transition";
+
+        issueCard.innerHTML = `
+            <h3 class="font-bold text-lg text-blue-500 hover:underline">
+                <a href="${issue.html_url}" target="_blank">${issue.title}</a>
+            </h3>
+            <p class="text-gray-600">${issue.body ? issue.body.slice(0, 100) + "..." : "No description provided."}</p>
+            <p class="text-sm text-gray-400 mt-2">Created by: ${issue.user.login}</p>
+        `;
+
+        issuesContainer.appendChild(issueCard);
+    });
 }
